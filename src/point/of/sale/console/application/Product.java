@@ -9,6 +9,8 @@ package point.of.sale.console.application;
  *
  * @author Admin
  */
+
+// This class is the blueprint of products it's responsible for manipulating a products
 public class Product {
     
 }

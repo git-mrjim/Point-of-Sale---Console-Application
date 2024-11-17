@@ -11,6 +11,8 @@ import java.util.ArrayList;
  *
  * @author Admin
  */
+
+// This class serve as the storage of the entire system
 public class Storage {
     
     public static ArrayList<Auth> Users = new ArrayList<>();

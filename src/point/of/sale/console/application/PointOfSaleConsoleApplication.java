@@ -10,6 +10,11 @@ package point.of.sale.console.application;
  * @author Admin
  */
 
+// Simple POS System Console App that can authenticate users and manipulate products.
+// Final Object Oriented Programming ( Java ) project.
+
+
+// Main class this used for initialized all components
 public class PointOfSaleConsoleApplication {
 
     /**
@@ -17,6 +22,7 @@ public class PointOfSaleConsoleApplication {
      */
     public static void main(String[] args) {
         
+        // Initialized Components class and display it
         Components components = new Components();
         components.Start();
          

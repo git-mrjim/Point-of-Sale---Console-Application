@@ -13,6 +13,8 @@ package point.of.sale.console.application;
 import java.util.Scanner;
 import java.io.IOException;
 
+
+// This class is responsible for displaying all the components of the system
 public class Components {
     
     private Scanner scan = new Scanner(System.in);
@@ -74,32 +76,11 @@ public class Components {
         
     }
     
-    public void AuthForm(boolean isForSignUp) {
-        
-        if (isForSignUp) {
-            System.out.print("Fullname: ");
-            this.fullname = this.scan.nextLine();
-        }
-        
-        System.out.print("Username: ");
-        this.username = this.scan.nextLine();
-        System.out.print("Password: ");
-        this.password = this.scan.nextLine();
-        
-    }
-    
-    public void SignUp() {
-        
-        Auth user = new Auth();
-        
-        System.out.println("\n");
-        System.out.println("--------------------------------------------");
-        System.out.println("Sign-up");
-        System.out.println("--------------------------------------------");
+    public void FullnameForm(Auth user, String format) {
         
         while (true) {
             
-            System.out.print("Fullname: ");
+            System.out.printf("%sFullname: ", format);
             this.fullname = this.scan.nextLine();
             
             if (user.validateFullname(this.fullname)) {
@@ -112,9 +93,13 @@ public class Components {
             
         }
         
+    }
+    
+    public void UsernameForm(Auth user, String format) {
+        
         while (true) {
             
-            System.out.print("Username: ");
+            System.out.printf("%sUsername: ", format);
             this.username = this.scan.nextLine();
             
             if (user.validateUsername(this.username)) {
@@ -126,13 +111,18 @@ public class Components {
             }
             
         }
+        
+    }
+    
+    public void PasswordForm(Auth user, String format) {
+        
         String previousInputPassword = "";
         while (true) {
             
             if (!previousInputPassword.equals("")) {
                 System.out.println("Previous: " + previousInputPassword);
             }
-            System.out.print("Password: ");
+            System.out.printf("%sPassword: ", format);
             this.password = this.scan.nextLine();
             previousInputPassword = this.password;
             
@@ -146,6 +136,21 @@ public class Components {
             
         }
         
+    }
+    
+    public void SignUp() {
+        
+        Auth user = new Auth();
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Sign-up");
+        System.out.println("--------------------------------------------");
+        
+        this.FullnameForm(user, "");
+        this.UsernameForm(user, "");
+        this.PasswordForm(user, "");
+        
         Storage.Users.add(user);
         this.Clear();
         System.out.println("Sign-up successful.");
@@ -153,19 +158,19 @@ public class Components {
         boolean loop = true;
         while (loop) {
 
-            System.out.print("You want to login? (Yes - 1 | No - 2): ");
+            System.out.print("Go back (1 - Yes | 2 - No): ");
             this.input = this.scan.nextLine();
 
             switch(this.input) {
             case "1":
                 this.Clear();
                 loop = false;
-                this.Login();
+                this.Start();
                 break;
             case "2":
                 this.Clear();
                 loop = false;
-                this.Start();
+                this.SignUp();
                 break;
             default:
                 this.Clear();
@@ -237,23 +242,145 @@ public class Components {
             case "1":
             case "2":
             case "3":
-            case "4":
-                this.Clear();
-                System.out.println("The 1 - 4 is not available yet.");
-                this.MainMenu();
-                break;
-            case "5":
-                this.Clear();
-                this.authActive = null;
-                this.Start();
-                break;
-            default:
-                this.Clear();
-                System.out.println("Invalid input.");
-                this.MainMenu();
+               this.Clear();
+               System.out.println("1 - 3 is not available yet..");
+               this.MainMenu();
                break;
-
+            case "4":
+               this.Clear();
+               this.AccountSettings();
+               break;
+            default:
+               this.Clear();
+               System.out.println("Invalid input.");
+               this.MainMenu();
+               break;
         }
+        
+    }
+    
+    public void AccountSettings() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println(" Account Settings");
+        System.out.println("--------------------------------------------");
+        System.out.printf("Fullname: %s%nUsername: %s%nPassword: %s%n", this.authActive.getFullname(), this.authActive.getUsername(), this.authActive.getPasswordWithStar());
+        System.out.println("--------------------------------------------");
+
+        System.out.print("Do you want to edit (1 – Yes | 2 - No): ");
+        this.input = this.scan.nextLine();
+
+        switch(this.input) {
+        case "1":
+            this.Clear();
+            this.EditAccount();
+            break;
+        case "2":
+            this.Clear();
+            this.MainMenu();
+            break;
+        default:
+            this.Clear();
+            System.out.println("Invalid input.");
+            this.AccountSettings();
+           break;
+        }
+    }
+    
+    
+    public void EditAccount() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.printf("Edit Account");
+        System.out.println("--------------------------------------------");
+        System.out.println("1. Edit Fullname/n2. Edit Username/n3. Edit Password/n4. Back");
+        System.out.println("--------------------------------------------");
+        
+        System.out.print("What do you want to edit (?): ");
+        this.input = this.scan.nextLine();
+
+        switch(this.input) {
+            case "1":
+               this.Clear();
+               this.EditFullname();
+               break;
+            case "2":
+               this.Clear();
+               this.EditUsername();
+               break;
+            case "3":
+               this.Clear();
+               this.EditPassword();
+               break;
+            case "4":
+               this.Clear();
+               this.AccountSettings();
+               break;
+            default:
+               this.Clear();
+               System.out.println("Invalid input.");
+               this.EditAccount();
+               break;
+        }
+        
+    }
+    
+    public void EditFullname() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.printf("Edit Fullname");
+        System.out.println("--------------------------------------------");
+        
+        System.out.println("Fullname: " + this.authActive.getFullname());
+        this.FullnameForm(authActive, "New ");
+        
+        this.Clear();
+        System.out.println("Fullname updated successfully.");
+        this.EditAccount();
+        
+    }
+    
+    public void EditUsername() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.printf("Edit Username");
+        System.out.println("--------------------------------------------");
+        
+        System.out.println("Username: " + this.authActive.getUsername());
+        this.UsernameForm(authActive, "New ");
+        
+        this.Clear();
+        System.out.println("Username updated successfully.");
+        this.EditAccount();
+        
+    }
+    
+    public void EditPassword() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.printf("Edit Password");
+        System.out.println("--------------------------------------------");
+        
+        System.out.print("Current Password: ");
+        this.input = this.scan.nextLine();
+        
+        if (authActive.getPassword().equals(this.input)) {
+            this.PasswordForm(authActive, "New ");
+        } else {
+            this.Clear();
+            System.out.println("Current Password is incorrect.");
+            this.EditPassword();
+        }
+            
+        this.Clear();
+        System.out.println("Password updated successfully.");
+        this.EditAccount();
+        
     }
     
 }

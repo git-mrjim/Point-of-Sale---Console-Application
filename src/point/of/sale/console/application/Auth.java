@@ -9,6 +9,9 @@ package point.of.sale.console.application;
  *
  * @author Admin
  */
+
+
+// This class is responsible for Authentication it's validate the user input and serve as a blueprint of the user
 public class Auth {
     private String authFullname;
     private String authUsername;
@@ -149,6 +152,14 @@ public class Auth {
     
     public String getPassword() {
         return this.authPassword;
+    }
+    
+    public String getPasswordWithStar() {
+        String star = "";
+        for (int i = 0; i < this.authPassword.length(); i++) {
+            star = star + "*";
+        }
+        return star;
     }
     
 }
