@@ -5,21 +5,19 @@
  */
 package point.of.sale.console.application;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Admin
  */
-
-public class PointOfSaleConsoleApplication {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+public class Storage {
+    
+    public static ArrayList<Auth> Users = new ArrayList<>();
+    public static ArrayList<Product> Products = new ArrayList<>();
+    
+    Storage() {
         
-        Components components = new Components();
-        components.Start();
-         
     }
     
 }

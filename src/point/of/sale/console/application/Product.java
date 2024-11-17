@@ -9,17 +9,6 @@ package point.of.sale.console.application;
  *
  * @author Admin
  */
-
-public class PointOfSaleConsoleApplication {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        
-        Components components = new Components();
-        components.Start();
-         
-    }
+public class Product {
     
 }

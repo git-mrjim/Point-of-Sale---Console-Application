@@ -11,13 +11,12 @@ package point.of.sale.console.application;
  */
 
 import java.util.Scanner;
-import java.util.ArrayList;
+import java.io.IOException;
 
 public class Components {
     
     private Scanner scan = new Scanner(System.in);
-    private ArrayList<Auth> Storage = new ArrayList<>();
-    private Auth authLogin;
+    private Auth authActive;
     private Auth admin = new Auth("admin", "admin", "admin");
     
     private String fullname;
@@ -25,37 +24,23 @@ public class Components {
     private String password;
     private String input;
     
-    private boolean loop;
-    
     Components() {
         
-        this.Storage.add(admin);
+        Storage.Users.add(admin);
         
-        loop = true;
-        while(loop) {
-            
-            this.Intro();
-            
-            switch(this.input) {
-                case "1":
-                    this.SignUp();
-                    break;
-                case "2":
-                   this.Login();
-                   break;
-                case "3":
-                   loop = false;
-                   break;
-                default:
-                   System.out.println("Invalid input.");
-                   break;
-            }
-            
+    }
+    
+    public void Clear() {
+        
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
         
     }
     
-    public void Intro() {
+    public void Start() {
         
         System.out.println("\n");
         System.out.println("Jimwell Ibay, John Benedict Calara, Charizza Flores");
@@ -64,9 +49,28 @@ public class Components {
         System.out.println("--------------------------------------------");
         System.out.println("1. Sign-up\n2. Login\n3. Exit");
         System.out.println("--------------------------------------------");
-        
+
         System.out.print("What do you want to do (?): ");
         this.input = this.scan.nextLine();
+
+        switch(this.input) {
+            case "1":
+                this.Clear();
+                this.SignUp();
+                break;
+            case "2":
+               this.Clear();
+               this.Login();
+               break;
+            case "3":
+               this.Clear();
+               break;
+            default:
+               this.Clear();
+               System.out.println("Invalid input.");
+               this.Start();
+               break;
+        }
         
     }
     
@@ -86,62 +90,89 @@ public class Components {
     
     public void SignUp() {
         
+        Auth user = new Auth();
+        
         System.out.println("\n");
-        System.out.println("Warning: Password should be atleas 8 characters, should have capital letters and numbers and should not hsve symbols");
-        System.out.println("Warning: Password and Username should not hsve space and should not empty");;
         System.out.println("--------------------------------------------");
         System.out.println("Sign-up");
         System.out.println("--------------------------------------------");
-        this.AuthForm(true);
-        System.out.println("--------------------------------------------");
         
-        Auth auth = new Auth(this.fullname, this.username, this.password);
-        
-        boolean isDuplicateUsername = false;
-        for (Auth item : this.Storage ) {
-            if (item.getUsername().equals(auth.getUsername())) {
-                isDuplicateUsername = true;
+        while (true) {
+            
+            System.out.print("Fullname: ");
+            this.fullname = this.scan.nextLine();
+            
+            if (user.validateFullname(this.fullname)) {
+                user.setFullname(this.fullname);
+                break;
+            } else {
+                this.Clear();
+                System.out.println(user.validationMessage);
             }
+            
         }
         
-        if (isDuplicateUsername) {
-            System.out.println("Username is already exist.");
+        while (true) {
+            
+            System.out.print("Username: ");
+            this.username = this.scan.nextLine();
+            
+            if (user.validateUsername(this.username)) {
+                user.setUsername(this.username);
+                break;
+            } else {
+                this.Clear();
+                System.out.println(user.validationMessage);
+            }
+            
+        }
+        String previousInputPassword = "";
+        while (true) {
+            
+            if (!previousInputPassword.equals("")) {
+                System.out.println("Previous: " + previousInputPassword);
+            }
+            System.out.print("Password: ");
+            this.password = this.scan.nextLine();
+            previousInputPassword = this.password;
+            
+            if (user.validatePassword(this.password)) {
+                user.setPassword(this.password);
+                break;
+            } else {
+                this.Clear();
+                System.out.println(user.validationMessage);
+            }
+            
         }
         
-        if (auth.Validate()) {
-            
-            System.out.println("\n");
-            System.out.println("--------------------------------------------");
-            System.out.println("Sign-up Information");
-            System.out.println("--------------------------------------------");
-            System.out.println(auth.validationMessage);
-            System.out.println("--------------------------------------------");
-            
-            System.out.println("Sign up successful.");
-            this.Storage.add(auth);
-            
-            System.out.println("\n");
-            System.out.print("You want to login? (Yes - 1 | No - 2):");
+        Storage.Users.add(user);
+        this.Clear();
+        System.out.println("Sign-up successful.");
+
+        boolean loop = true;
+        while (loop) {
+
+            System.out.print("You want to login? (Yes - 1 | No - 2): ");
             this.input = this.scan.nextLine();
-            
+
             switch(this.input) {
-                case "1":
-                    this.Login();
-                    break;
-                case "2":
-                    break;
-                default:
-                    System.out.println("Invalid input.");
-                   break;
-                    
+            case "1":
+                this.Clear();
+                loop = false;
+                this.Login();
+                break;
+            case "2":
+                this.Clear();
+                loop = false;
+                this.Start();
+                break;
+            default:
+                this.Clear();
+                System.out.println("Invalid input.");
+               break;
             }
-            
-            
-        } else {
-            System.out.println(auth.validationMessage);
-            this.SignUp();
-        }
-        
+        }      
     }
     
     public void Login() {
@@ -150,74 +181,79 @@ public class Components {
         System.out.println("--------------------------------------------");
         System.out.println("Login");
         System.out.println("--------------------------------------------");
-        this.AuthForm(false);
-        System.out.println("--------------------------------------------");
+        System.out.print("Username: ");
+        this.username = this.scan.nextLine();
+        System.out.print("Password: ");
+        this.password = this.scan.nextLine();
 
         boolean isSuccess = false;
-        for (Auth item : this.Storage) {
+        for (Auth item : Storage.Users) {
 
             String itemUsername = item.getUsername();
             String itemPassword = item.getPassword();
             boolean validateUsername = itemUsername.equals(this.username);
-            boolean validatePassword = itemPassword.equals(this.password);
+            boolean validatePassword = itemPassword.equals(this.password); 
 
             if (validateUsername ^ validatePassword) {
                 if (!validateUsername) {
+                    this.Clear();
                     System.out.println("Username is incorrect.");
                 } else if (!validatePassword) {
+                    this.Clear();
                     System.out.println("Password is incorrect.");
                 }
                 this.Login();
             } else if (validateUsername && validatePassword) {
                 isSuccess = true;
+                this.Clear();
                 System.out.println("Login successful.");
-                this.authLogin = item;
+                this.authActive = item;
                 this.MainMenu();
                 break;
             }
         }
         
         if (!isSuccess) {
+            this.Clear();
             System.out.println("Account not found.");
+            this.Login();
         } 
         
     }
     
     public void MainMenu() {
         
-        boolean loop = true;
-        while(loop) {
-            
-            System.out.println("\n");
-            System.out.println("--------------------------------------------");
-            System.out.printf(" Main Menu                User: %s%n", this.authLogin.getFullname());
-            System.out.println("--------------------------------------------");
-            System.out.println("1. Product Maintenance\n2. Transaction Module\n3. View Transactions\n4. Account Settings\n5. Logout");
-            System.out.println("--------------------------------------------");
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.printf(" Main Menu                User: %s%n", this.authActive.getFullname());
+        System.out.println("--------------------------------------------");
+        System.out.println("1. Product Maintenance\n2. Transaction Module\n3. View Transactions\n4. Account Settings\n5. Logout");
+        System.out.println("--------------------------------------------");
 
-            System.out.print("What do you want to do (?): ");
-            this.input = this.scan.nextLine();
-            
-            switch(this.input) {
+        System.out.print("What do you want to do (?): ");
+        this.input = this.scan.nextLine();
+
+        switch(this.input) {
             case "1":
             case "2":
             case "3":
             case "4":
+                this.Clear();
                 System.out.println("The 1 - 4 is not available yet.");
+                this.MainMenu();
                 break;
             case "5":
-                this.authLogin = null;
-                loop = false;
+                this.Clear();
+                this.authActive = null;
+                this.Start();
                 break;
             default:
+                this.Clear();
                 System.out.println("Invalid input.");
+                this.MainMenu();
                break;
-                    
-            }
-            
+
         }
-        
-        
     }
     
 }
