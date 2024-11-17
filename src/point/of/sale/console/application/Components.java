@@ -268,7 +268,7 @@ public class Components {
         System.out.printf("Fullname: %s%nUsername: %s%nPassword: %s%n", this.authActive.getFullname(), this.authActive.getUsername(), this.authActive.getPasswordWithStar());
         System.out.println("--------------------------------------------");
 
-        System.out.print("Do you want to edit (1 – Yes | 2 - No): ");
+        System.out.print("Do you want to edit (1 - Yes | 2 - No): ");
         this.input = this.scan.nextLine();
 
         switch(this.input) {
@@ -293,9 +293,9 @@ public class Components {
         
         System.out.println("\n");
         System.out.println("--------------------------------------------");
-        System.out.printf("Edit Account");
+        System.out.println("Edit Account");
         System.out.println("--------------------------------------------");
-        System.out.println("1. Edit Fullname/n2. Edit Username/n3. Edit Password/n4. Back");
+        System.out.println("1. Edit Fullname\n2. Edit Username\n3. Edit Password\n4. Back");
         System.out.println("--------------------------------------------");
         
         System.out.print("What do you want to edit (?): ");
@@ -331,7 +331,7 @@ public class Components {
         
         System.out.println("\n");
         System.out.println("--------------------------------------------");
-        System.out.printf("Edit Fullname");
+        System.out.println("Edit Fullname");
         System.out.println("--------------------------------------------");
         
         System.out.println("Fullname: " + this.authActive.getFullname());
@@ -347,7 +347,7 @@ public class Components {
         
         System.out.println("\n");
         System.out.println("--------------------------------------------");
-        System.out.printf("Edit Username");
+        System.out.println("Edit Username");
         System.out.println("--------------------------------------------");
         
         System.out.println("Username: " + this.authActive.getUsername());
@@ -363,7 +363,7 @@ public class Components {
         
         System.out.println("\n");
         System.out.println("--------------------------------------------");
-        System.out.printf("Edit Password");
+        System.out.println("Edit Password");
         System.out.println("--------------------------------------------");
         
         System.out.print("Current Password: ");
@@ -380,6 +380,48 @@ public class Components {
         this.Clear();
         System.out.println("Password updated successfully.");
         this.EditAccount();
+        
+    }
+    
+    public void ProductMaintenance() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Product Maintenance");
+        System.out.println("--------------------------------------------");
+        
+        System.out.println("\n");
+        System.out.println("List of Products");
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Operations:");
+        System.out.println("--------------------------------------------");
+        System.out.println("1. Add\n2. Edit\n3. Delete\n4. Search\n5. Back");
+        System.out.println("--------------------------------------------");
+        
+        System.out.print("What do you want to do (?): ");
+        this.input = this.scan.nextLine();
+
+        switch(this.input) {
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+               this.Clear();
+               System.out.println("1 - 4 is not available yet.");
+               this.ProductMaintenance();
+               break;
+            case "5":
+                this.Clear();
+                this.MainMenu();
+                break;
+            default:
+               this.Clear();
+               System.out.println("Invalid input.");
+               this.ProductMaintenance();
+               break;
+        }
         
     }
     

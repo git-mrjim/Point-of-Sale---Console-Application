@@ -13,4 +13,10 @@ package point.of.sale.console.application;
 // This class is the blueprint of products it's responsible for manipulating a products
 public class Product {
     
+    Integer productCode;
+    String productName;
+    Integer productStocks;
+    Float productPrice;
+    
+    
 }
