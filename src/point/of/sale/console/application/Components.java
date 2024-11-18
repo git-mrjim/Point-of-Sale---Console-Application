@@ -19,7 +19,7 @@ public class Components {
     
     private Scanner scan = new Scanner(System.in);
     private Auth authActive;
-    private Auth admin = new Auth("admin", "admin", "admin");
+    private Auth admin = new Auth("admin", "admin", "Admin_123");
     
     private String fullname;
     private String username;
@@ -29,6 +29,23 @@ public class Components {
     Components() {
         
         Storage.Users.add(admin);
+        
+        Product vitamilk = new Product("A1", "Vitamilk", 222, 50.4f, admin);
+        Product yakult = new Product("A2", "Yakult", 82, 90.0f, admin);
+        Product emperador = new Product("A3", "Emperador", 500, 99.0f, admin);
+        Product alfonso = new Product("A4", "Alfonso", 105, 110.0f, admin);
+        Product redhorse = new Product("A5", "Red Horse", 1022, 50.5f, admin);
+        Product alibaba = new Product("B1", "Alibaba", 200, 20.0f, admin);
+        Product nova = new Product("B2", "Nova", 50, 20.2f, admin);
+        Product piatos = new Product("B3", "Piatos", 80, 20.0f, admin);
+        Storage.Products.add(vitamilk);
+        Storage.Products.add(yakult);
+        Storage.Products.add(emperador);
+        Storage.Products.add(alfonso);
+        Storage.Products.add(redhorse);
+        Storage.Products.add(alibaba);
+        Storage.Products.add(nova);
+        Storage.Products.add(piatos);
         
     }
     
@@ -83,8 +100,7 @@ public class Components {
             System.out.printf("%sFullname: ", format);
             this.fullname = this.scan.nextLine();
             
-            if (user.validateFullname(this.fullname)) {
-                user.setFullname(this.fullname);
+            if (user.setFullname(this.fullname)) {
                 break;
             } else {
                 this.Clear();
@@ -102,8 +118,7 @@ public class Components {
             System.out.printf("%sUsername: ", format);
             this.username = this.scan.nextLine();
             
-            if (user.validateUsername(this.username)) {
-                user.setUsername(this.username);
+            if (user.setUsername(this.username)) {
                 break;
             } else {
                 this.Clear();
@@ -126,8 +141,7 @@ public class Components {
             this.password = this.scan.nextLine();
             previousInputPassword = this.password;
             
-            if (user.validatePassword(this.password)) {
-                user.setPassword(this.password);
+            if (user.setPassword(this.password)) {
                 break;
             } else {
                 this.Clear();
@@ -240,10 +254,13 @@ public class Components {
 
         switch(this.input) {
             case "1":
+               this.Clear();
+               this.ProductMaintenance();
+               break;
             case "2":
             case "3":
                this.Clear();
-               System.out.println("1 - 3 is not available yet..");
+               System.out.println("2 - 3 is not available yet.");
                this.MainMenu();
                break;
             case "4":
@@ -265,7 +282,11 @@ public class Components {
         System.out.println("--------------------------------------------");
         System.out.println(" Account Settings");
         System.out.println("--------------------------------------------");
-        System.out.printf("Fullname: %s%nUsername: %s%nPassword: %s%n", this.authActive.getFullname(), this.authActive.getUsername(), this.authActive.getPasswordWithStar());
+        System.out.printf("Fullname: %s%nUsername: %s%nPassword: %s%n", 
+                this.authActive.getFullname(), 
+                this.authActive.getUsername(), 
+                this.authActive.getPasswordWithStar()
+        );
         System.out.println("--------------------------------------------");
 
         System.out.print("Do you want to edit (1 - Yes | 2 - No): ");
@@ -392,6 +413,9 @@ public class Components {
         
         System.out.println("\n");
         System.out.println("List of Products");
+        
+        Product product = new Product();
+        product.productsList(admin);
         
         System.out.println("\n");
         System.out.println("--------------------------------------------");

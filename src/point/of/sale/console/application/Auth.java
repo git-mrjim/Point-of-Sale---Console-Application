@@ -41,9 +41,9 @@ public class Auth {
     }
     
     Auth(String fullname, String username, String password) {
-        this.authFullname = fullname;
-        this.authUsername = username;
-        this.authPassword = password;
+        this.setFullname(fullname);
+        this.setUsername(username);
+        this.setPassword(password);
     }
     
     
@@ -130,16 +130,31 @@ public class Auth {
         return true;
     }
     
-    public void setFullname(String newFullname) {
-        this.authFullname = newFullname;
+    public boolean setFullname(String newFullname) {
+        if (this.validateFullname(newFullname)) {
+            this.authFullname = newFullname;
+            return true;
+        } else {
+            return false;
+        }
     }
     
-    public void setUsername(String newUsername) {
-        this.authUsername = newUsername;
+    public boolean setUsername(String newUsername) {
+        if (this.validateUsername(newUsername)) {
+            this.authUsername = newUsername;
+            return true;
+        } else {
+            return false;
+        }
     }
     
-    public void setPassword(String newPassword) {
-        this.authPassword = newPassword;
+    public boolean setPassword(String newPassword) {
+        if (this.validatePassword(newPassword)) {
+            this.authPassword = newPassword;
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public String getFullname() {
