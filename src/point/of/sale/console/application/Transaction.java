@@ -154,7 +154,7 @@ public class Transaction {
         this.transactionTotal = total;
         
         this.transactionPayment = payment;
-        this.transactionChange = this.transactionPayment - this.transactionTotal;
+        this.transactionChange = Math.round(this.transactionPayment - this.transactionTotal);
         
     }
 
