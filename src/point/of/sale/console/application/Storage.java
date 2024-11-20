@@ -17,6 +17,7 @@ public class Storage {
     
     public static ArrayList<Auth> Users = new ArrayList<>();
     public static ArrayList<Product> Products = new ArrayList<>();
+    public static ArrayList<Transaction> Transactions = new ArrayList<>();
     
     Storage() {
         

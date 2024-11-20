@@ -12,6 +12,7 @@ package point.of.sale.console.application;
 
 import java.util.Scanner;
 import java.io.IOException;
+import java.util.InputMismatchException;
 
 
 // This class is responsible for displaying all the components of the system
@@ -258,15 +259,23 @@ public class Components {
                this.ProductMaintenance();
                break;
             case "2":
+                this.Clear();
+                this.TransactionModule();
+                break;
             case "3":
                this.Clear();
-               System.out.println("2 - 3 is not available yet.");
-               this.MainMenu();
+               this.ViewTransactions();
                break;
             case "4":
                this.Clear();
                this.AccountSettings();
                break;
+            case "5":
+                this.Clear();
+                System.out.println("Bye " + authActive.getFullname() + " :(");
+                authActive = null;
+                this.Start();
+                break;
             default:
                this.Clear();
                System.out.println("Invalid input.");
@@ -448,5 +457,224 @@ public class Components {
         }
         
     }
+    
+        public void TransactionModule() {
+            
+            System.out.println("\n");
+            System.out.println("--------------------------------------------");
+            System.out.println("Transaction Module");
+            System.out.println("--------------------------------------------");
+
+            System.out.println("\n");
+            System.out.println("Menu");
+            
+            Product product = new Product();
+            product.productsList(admin);
+            
+            int orders = 0;
+            while (true) {
+                try {
+                
+                    System.out.print("How many orders?: ");
+                    orders = this.scan.nextInt();
+                    break;
+                    
+                } catch (InputMismatchException e) {
+
+                    System.out.println("Invalid: Enter an integer only");
+                    this.scan.nextLine();
+
+                } 
+            }
+            
+            Transaction transaction = new Transaction();
+            
+            System.out.println("\n");
+            for (int i = 0; i < orders; i++) {
+                
+                this.scan.nextLine();
+                
+                boolean loop = true;
+                while (loop) {
+                    
+                    System.out.printf("Enter menu code [%s]: ", i + 1);
+                    String code = this.scan.nextLine();
+                    
+                    int qty;
+                    while (true) {
+                        
+                         try {
+                            
+                            System.out.printf("Enter QTY [%s]: ", i + 1);
+                            qty = this.scan.nextInt();
+                            break;
+                             
+                        } catch (InputMismatchException e) {
+                            
+                            System.out.println("Invalid: Enter an integer only");
+                            this.scan.nextLine();
+                            
+                        }
+                         
+                    }
+                    
+                    if (transaction.setTransaction(code, qty)) {
+                        loop = false;
+                    } else {
+                        System.out.println(transaction.setTransactionMessage);
+                        this.scan.nextLine();
+                    }
+                    
+                } 
+                
+            }
+            
+            this.Clear();
+            System.out.println("\n");
+            transaction.subTransactionList();
+            
+            System.out.println("\n");
+            
+            float payment = 0;
+            while (true) {
+              try {
+                
+                    System.out.print("Enter payment: ");
+                    payment = this.scan.nextFloat();
+                    transaction.Calculate(payment);
+                    
+                    if (payment >= Math.round(transaction.getTotal())) {
+                        
+                        System.out.println("\n");
+                        System.out.printf("Change: %.1f%n", transaction.getChange());
+                        
+                        Storage.Transactions.add(transaction);
+                        
+                        System.out.println("\n");
+                        System.out.println("Transaction Successful.");
+                        break;
+                
+                    } else {
+
+                         System.out.println("The payment is not enough.");
+                         System.out.println("Transaction Failed.");
+
+                    }
+                
+                } catch (InputMismatchException e) {
+                    
+                     System.out.println("Invalid: Enter an integer only");
+                     this.scan.nextLine();
+                    
+                }  
+            }
+            
+          
+            boolean loop = true;
+            while (loop) {
+                
+                this.scan.nextLine();
+                
+                System.out.print("Another Transaction (1 - Yes | 2 - No): ");
+                this.input = this.scan.nextLine();
+                
+                switch(this.input) {
+                    case "1":
+                        this.Clear();
+                        this.TransactionModule();
+                        loop = false;
+                        break;
+                    case "2":
+                        this.Clear();
+                        this.MainMenu();
+                        loop = false;
+                        break;
+                    default:
+                        this.Clear();
+                        System.out.println("Invalid input.");
+                       break;
+                }
+                
+            }
+            
+        }
+        
+        public void ViewTransactions() {
+            
+            System.out.println("\n");
+            System.out.println("--------------------------------------------");
+            System.out.println("View Transactions");
+            System.out.println("--------------------------------------------");
+            
+            System.out.println("\n");
+            System.out.println("List of Transactions");
+            
+            Transaction transaction = new Transaction();
+            transaction.TransactionList();
+            
+            Transaction transactionChoose = null;
+            
+            boolean loop = true;
+            while (loop) { 
+                
+                System.out.println("Input BACK if you want to back  Main Menu: ");
+                System.out.print("Enter Transaction No: ");
+                String transactionCode = this.scan.nextLine();
+                
+                if (transactionCode.toUpperCase().equals("BACK")) {
+                        this.Clear();
+                        this.MainMenu();
+                }
+
+                boolean isSuccess = false;
+                for (Transaction item : Storage.Transactions) {
+
+                    if (item.getNoCode().equals(transactionCode)) {
+                        isSuccess = true;
+                        transactionChoose = item;
+                        break;
+                    } 
+
+                }
+
+                if (isSuccess) {
+                    loop = false;
+                } else {
+                    System.out.println("Invalid: Transaction code is incorrect.");
+                }
+                
+            }
+            
+            this.Clear();
+            transactionChoose.subTransactionList();
+            System.out.println("\n");
+            System.out.printf("Entered Paymnt: %.1f%nChange: %.1f%n", transactionChoose.getPayment(), transactionChoose.getChange());
+            
+            loop = true;
+            while (loop) {
+                
+                System.out.print("View Another Transaction (1 - Yes | 2 - No): ");
+                this.input = this.scan.nextLine();
+                
+                switch(this.input) {
+                    case "1":
+                        this.Clear();
+                        this.ViewTransactions();
+                        loop = false;
+                        break;
+                    case "2":
+                        this.Clear();
+                        this.MainMenu();
+                        loop = false;
+                        break;
+                    default:
+                        this.Clear();
+                        System.out.println("Invalid input.");
+                       break;
+                }
+                
+            }
+            
+        }
     
 }

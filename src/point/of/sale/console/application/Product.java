@@ -39,13 +39,12 @@ public class Product {
         System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
         System.out.println("---------------------------------------------------------------------------");
 
-        int productCounter = 0;
         for (Product product : Storage.Products) {
+            int productNo = Storage.Products.indexOf(product) + 1;
             if (product.productDependency.getUsername().equals(dependency.getUsername())) {
-                productCounter++;
                 System.out.printf(
                     "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
-                    productCounter, 
+                    productNo, 
                     product.getCode(), 
                     product.getName(), 
                     product.getStocks(), 
@@ -77,5 +76,13 @@ public class Product {
         
         return this.productPrice;
     }
+     
+     public void stacksIn(int number) {
+         this.productStocks = this.productStocks + number;
+     }
+     
+      public void stacksOut(int number) {
+         this.productStocks = this.productStocks - number;
+     }
     
 }
