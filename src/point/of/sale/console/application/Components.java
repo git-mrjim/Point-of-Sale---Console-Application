@@ -31,23 +31,6 @@ public class Components {
         
         Storage.Users.add(admin);
         
-        Product vitamilk = new Product("A1", "Vitamilk", 222, 50.4f, admin);
-        Product yakult = new Product("A2", "Yakult", 82, 90.0f, admin);
-        Product emperador = new Product("A3", "Emperador", 500, 99.0f, admin);
-        Product alfonso = new Product("A4", "Alfonso", 105, 110.0f, admin);
-        Product redhorse = new Product("A5", "Red Horse", 1022, 50.5f, admin);
-        Product alibaba = new Product("B1", "Alibaba", 200, 20.0f, admin);
-        Product nova = new Product("B2", "Nova", 50, 20.2f, admin);
-        Product piatos = new Product("B3", "Piatos", 80, 20.0f, admin);
-        Storage.Products.add(vitamilk);
-        Storage.Products.add(yakult);
-        Storage.Products.add(emperador);
-        Storage.Products.add(alfonso);
-        Storage.Products.add(redhorse);
-        Storage.Products.add(alibaba);
-        Storage.Products.add(nova);
-        Storage.Products.add(piatos);
-        
     }
     
     public void Clear() {
@@ -424,7 +407,7 @@ public class Components {
         System.out.println("List of Products");
         
         Product product = new Product();
-        product.productsList(admin);
+        product.productsList(authActive);
         
         System.out.println("\n");
         System.out.println("--------------------------------------------");
@@ -438,12 +421,20 @@ public class Components {
 
         switch(this.input) {
             case "1":
+                this.Clear();
+                this.AddProduct();
+                break;
             case "2":
+                this.Clear();
+                this.EditProduct();
+                break;
             case "3":
+                this.Clear();
+                this.DeleteProduct();
+                break;
             case "4":
                this.Clear();
-               System.out.println("1 - 4 is not available yet.");
-               this.ProductMaintenance();
+               this.SearchProduct();
                break;
             case "5":
                 this.Clear();
@@ -458,6 +449,753 @@ public class Components {
         
     }
     
+    public void ProductNameForm(Product product, String format) {
+        
+        while (true) {
+            
+            System.out.printf("%sProduct Name: ", format);
+            String input = this.scan.nextLine();
+            
+            if (input.equals("") || input.equals(" ")) {
+                System.out.println("Invalid: It's empty");
+                continue;
+            } 
+            
+            if (product.setName(input)) {
+                break;
+            } else {
+                System.out.println("Invalid: That's name is already exist.");
+            }
+            
+        }
+        
+    }
+    
+    public void ProductStocksForm(Product product, String format) {
+        
+        while (true) {
+            
+             try {
+                
+                  System.out.printf("%sProduct Stocks: ", format);
+                  int input = this.scan.nextInt();
+                  
+                  if (product.setStocks(input)) {
+                      break;
+                  }
+                    
+                } catch (InputMismatchException e) {
+
+                    System.out.println("Invalid: Enter an integer only");
+                    this.scan.nextLine();
+                    
+            } 
+            
+        }
+        
+    }
+    
+     public void ProductIncreaseStocksForm(Product product) {
+         
+         while (true) {
+            
+             try {
+                
+                  System.out.print("Increase Stocks By: ");
+                  int input = this.scan.nextInt();
+                  
+                  if (product.stacksIn(input)) {
+                      break;
+                  }
+                    
+                } catch (InputMismatchException e) {
+
+                    System.out.println("Invalid: Enter an integer only");
+                    this.scan.nextLine();
+                    
+            } 
+            
+        }
+         
+     }
+     
+     public void ProductReduceStocksForm(Product product) {
+         
+         while (true) {
+            
+             try {
+                
+                  System.out.print("Reduce Stocks By: ");
+                  int input = this.scan.nextInt();
+                  
+                  if (product.stacksOut(input)) {
+                      break;
+                  }
+                    
+                } catch (InputMismatchException e) {
+
+                    System.out.println("Invalid: Enter an integer only");
+                    this.scan.nextLine();
+                    
+            } 
+            
+        }
+         
+     }
+    
+    public void ProductPriceForm(Product product, String format) {
+        
+        while (true) {
+            
+             try {
+                
+                  System.out.printf("%sProduct Price: ", format);
+                  float input = this.scan.nextFloat();
+                  
+                  if(product.setPrice(input)) {
+                      break;
+                  }
+                    
+                } catch (InputMismatchException e) {
+
+                    System.out.println("Invalid: Enter an integer only");
+                    this.scan.nextLine();
+                    
+            } 
+            
+        }
+        
+    }
+    
+     public void ProductIncreasePriceForm(Product product) {
+        
+        while (true) {
+            
+             try {
+                
+                  System.out.print("Increase Price By: ");
+                  float input = this.scan.nextFloat();
+                  
+                  if(product.priceIn(input)) {
+                      break;
+                  }
+                    
+                } catch (InputMismatchException e) {
+
+                    System.out.println("Invalid: Enter an integer only");
+                    this.scan.nextLine();
+                    
+            } 
+            
+        }
+        
+    }
+     
+    public void ProductReducePriceForm(Product product) {
+        
+        while (true) {
+            
+             try {
+                
+                  System.out.print("Reduce Price By: ");
+                  float input = this.scan.nextFloat();
+                  
+                  if(product.priceOut(input)) {
+                      break;
+                  }
+                    
+                } catch (InputMismatchException e) {
+
+                    System.out.println("Invalid: Enter an integer only");
+                    this.scan.nextLine();
+                    
+            } 
+            
+        }
+        
+    }
+    
+    public void AddProduct() {
+                
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Add Product");
+        System.out.println("--------------------------------------------");
+        
+        Product product = new Product();
+        
+        this.ProductNameForm(product, "");
+        this.ProductStocksForm(product, "");
+        this.ProductPriceForm(product, "");
+        this.input = this.scan.nextLine();
+         
+        boolean loop = true;
+        while (loop) {
+            
+            System.out.print("1 - Add | 2 - Cancel: ");
+            this.input = this.scan.nextLine();
+            
+            switch (this.input) {
+                case "1":
+                    product.setDependency(authActive);
+                    Storage.Products.add(product);
+                    String productCode =  product.setCode(product);
+                    this.Clear();
+                    System.out.println("Product added successfully.");
+                    System.out.println("Product Code for " + product.getName() + " is " + productCode);
+                    loop = false;
+                    break;
+                case "2":
+                    this.Clear();
+                    System.out.println("Product not added.");
+                    this.AddProduct();
+                    loop = false;
+                    break;
+                default:
+                    this.Clear();
+                    System.out.println("Invalid input.");
+                    break;
+            }
+            
+        }
+        
+        loop = true;
+        while (loop) {
+            
+            System.out.print("Go back (1 - Yes | 2 - No): ");
+            this.input = this.scan.nextLine();
+
+            switch (this.input) {
+                case "1":
+                    this.Clear();
+                    this.ProductMaintenance();
+                    loop = false;
+                    break;
+                case "2":
+                    this.Clear();
+                    this.AddProduct();
+                    loop = false;
+                    break;
+                default:
+                    this.Clear();
+                    System.out.println("Invalid input.");
+            }
+            
+        }
+    }
+    
+    
+    public void EditProduct() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Edit Product");
+        System.out.println("--------------------------------------------");
+        
+        Product product = new Product();
+        product.productsList(authActive);
+        System.out.println("Input BACK if you want to back on Product Maintenance");
+        System.out.print("Enter Product Code: ");
+        String productCode = this.scan.nextLine();
+        
+        if (productCode.toLowerCase().equals("back")) {
+            this.Clear();
+            this.ProductMaintenance();
+        }
+        
+        int productIndex;
+        boolean found = false;
+        Product productFound = null;
+        for (Product item : Storage.Products ) {
+            if (item.getCode().equals(productCode)) {
+                found = true;
+                productIndex = Storage.Products.indexOf(item);
+                productFound = Storage.Products.get(productIndex);
+            }
+        }
+        
+        this.Clear();
+        if (found) {
+            
+            boolean loop = true;
+            while (loop) {
+                
+                System.out.println("\n");
+                product.searchByCode(productCode, authActive);
+                System.out.println("--------------------------------------------");
+                System.out.printf("Edit Product %s By:%n", productFound.getName());
+                System.out.println("--------------------------------------------");
+                System.out.println("1. Name\n2. Stocks\n3. Increase Stocks\n4. Reduce Stocks\n5. Price\n6. Increase Price\n7. Reduce Price\n8. Exit");
+                System.out.println("--------------------------------------------");
+                System.out.print("What do you want to do (?): ");
+                this.input = this.scan.nextLine();
+
+                switch(input) {
+                    case "1":
+                        this.Clear();
+                        System.out.println("Current Name: " + productFound.getName());
+                        this.ProductNameForm(productFound, "New ");
+                        this.Clear();
+                        System.out.println("Product name update successful.");
+                        break;
+                    case "2":
+                        this.Clear();
+                        System.out.println("Current Stocks: " + productFound.getStocks());
+                        this.ProductStocksForm(productFound, "New ");
+                        this.scan.nextLine();
+                        this.Clear();
+                        System.out.println("Product stocks update successful.");
+                        break;
+                    case "3":
+                        this.Clear();
+                        System.out.println("Current Stocks: " + productFound.getStocks());
+                        this.ProductIncreaseStocksForm(productFound);
+                        this.scan.nextLine();
+                        this.Clear();
+                        System.out.println("Product stocks increase successful.");
+                        break;
+                    case "4":
+                        this.Clear();
+                        System.out.println("Current Stocks: " + productFound.getStocks());
+                        this.ProductReduceStocksForm(productFound);
+                        this.scan.nextLine();
+                        this.Clear();
+                        System.out.println("Product stocks reduce successful.");
+                        break;
+                    case "5":
+                        this.Clear();
+                        System.out.println("Current Price: " + productFound.getPrice());
+                        this.ProductPriceForm(productFound, "New ");
+                        this.scan.nextLine();
+                        this.Clear();
+                        System.out.println("Product price update successful.");
+                        break;
+                    case "6":
+                        this.Clear();
+                        System.out.println("Current Price: " + productFound.getPrice());
+                        this.ProductIncreasePriceForm(productFound);
+                        this.scan.nextLine();
+                        this.Clear();
+                        System.out.println("Product price increase successful.");
+                        break;
+                    case "7":
+                        this.Clear();
+                        System.out.println("Current Price: " + productFound.getPrice());
+                        this.ProductReducePriceForm(productFound);
+                        this.scan.nextLine();
+                        this.Clear();
+                        System.out.println("Product price reduce successful.");
+                        break;
+                    case "8":
+                        this.Clear();
+                        this.EditProduct();
+                        loop = false;
+                        break;
+                    default:
+                        this.Clear();
+                        System.out.println("Invalid input.");
+                        break;
+                }
+                
+            }
+            
+        } else {
+            this.Clear();
+            System.out.println("Product not found.");
+        }
+        
+        boolean loop = true;
+        while (loop) {
+            
+            System.out.print("Go back (1 - Yes | 2 - No): ");
+            this.input = this.scan.nextLine();
+
+            switch (this.input) {
+                case "1":
+                    this.Clear();
+                    this.ProductMaintenance();
+                    loop = false;
+                    break;
+                case "2":
+                    this.Clear();
+                    this.EditProduct();
+                    loop = false;
+                    break;
+                default:
+                    this.Clear();
+                    System.out.println("Invalid input.");
+            }
+            
+        }
+        
+    }
+    
+    public void DeleteProduct() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Delete Product");
+        System.out.println("--------------------------------------------");
+        
+        Product product = new Product();
+        product.productsList(authActive);
+        System.out.println("Input BACK if you want to back on Product Maintenance");
+        System.out.print("Enter Product Code: ");
+        String productCode = this.scan.nextLine();
+        
+        if (productCode.toLowerCase().equals("back")) {
+            this.Clear();
+            this.ProductMaintenance();
+        }
+        
+        boolean loop = true;
+        while (loop) {
+            
+            System.out.print("1 - Delete | 2 - Cancel: ");
+            this.input = this.scan.nextLine();
+            
+            switch (this.input) {
+                case "1":
+                    
+                    int productIndex = 0;
+                    boolean found = false;
+                    for (Product item : Storage.Products ) {
+                        if (item.getCode().equals(productCode)) {
+                            found = true;
+                            productIndex = Storage.Products.indexOf(item);
+                        }
+                    }
+                    
+                    if (found) {
+                        Storage.Products.remove(productIndex);
+                        this.Clear();
+                        System.out.println("Product delete successful.");
+                    } else {
+                        this.Clear();
+                        System.out.println("Product not found.");
+                    }
+                    
+                    loop = false;
+                    break;
+                case "2":
+                    this.Clear();
+                    System.out.println("Product not deleted.");
+                    this.DeleteProduct();
+                    loop = false;
+                    break;
+                default:
+                    this.Clear();
+                    System.out.println("Invalid input.");
+                    break;
+            }
+            
+        }
+        
+        loop = true;
+        while (loop) {
+            
+            System.out.print("Go back (1 - Yes | 2 - No): ");
+            this.input = this.scan.nextLine();
+
+            switch (this.input) {
+                case "1":
+                    this.Clear();
+                    this.ProductMaintenance();
+                    loop = false;
+                    break;
+                case "2":
+                    this.Clear();
+                    this.DeleteProduct();
+                    loop = false;
+                    break;
+                default:
+                    this.Clear();
+                    System.out.println("Invalid input.");
+            }
+            
+        }
+        
+    }
+    
+    public void SearchProduct() {
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Search Product");
+        System.out.println("--------------------------------------------");
+        
+        Product product = new Product();
+        
+        System.out.println("\n");
+        System.out.println("--------------------------------------------");
+        System.out.println("Search Product By:");
+        System.out.println("--------------------------------------------");
+        System.out.println("1. Code\n2. Name\n3. Specific Stocks\n4. Stocks Range\n5. Specific Price\n6. Price Range\n7. Back");
+        System.out.println("--------------------------------------------");
+        
+        System.out.print("What do you want to do (?): ");
+        this.input = this.scan.nextLine();
+        
+        switch (this.input) {
+            case "1":
+                
+                    System.out.print("Enter Product Code: ");
+                    String productCode = this.scan.nextLine();
+                    product.searchByCode(productCode, authActive);
+                    
+                    boolean loop = true;
+                    while (loop) {
+                    
+                    System.out.print("Go back (1 - Yes | 2 - No): ");
+                    this.input = this.scan.nextLine();
+
+                    switch (this.input) {
+                        case "1":
+                            this.Clear();
+                            this.SearchProduct();
+                            loop = false;
+                            break;
+                        case "2":
+                            this.Clear();
+                            break;
+                        default:
+                            this.Clear();
+                            System.out.println("Invalid input.");
+                    }
+
+                }
+                break;
+                
+            case "2":
+                
+                    System.out.print("Enter Product Name: ");
+                    String productName = this.scan.nextLine();
+                    product.searchByName(productName, authActive);
+
+                    loop = true;
+                    while (loop) {
+                    
+                    System.out.print("Go back (1 - Yes | 2 - No): ");
+                    this.input = this.scan.nextLine();
+
+                    switch (this.input) {
+                        case "1":
+                            this.Clear();
+                            this.SearchProduct();
+                            loop = false;
+                            break;
+                        case "2":
+                            this.Clear();
+                            break;
+                        default:
+                            this.Clear();
+                            System.out.println("Invalid input.");
+                    }
+               }
+                break;
+                
+            case "3":
+                
+                    int productStocks;
+                    while (true) {
+                        
+                         try {
+                            
+                             System.out.print("Enter Specific Stocks: ");
+                             productStocks = this.scan.nextInt();
+                             
+                           break;
+                             
+                        } catch (InputMismatchException e) {
+                            
+                            System.out.println("Invalid: Enter an integer only");
+                            this.scan.nextLine();
+                            
+                        }
+                        
+                    }
+                     this.scan.nextLine();
+                
+                    product.searchBySpecificStocks(productStocks, authActive);
+
+                    loop = true;
+                    while (loop) {
+                        
+                    System.out.print("Go back (1 - Yes | 2 - No): ");
+                    this.input = this.scan.nextLine();
+
+                    switch (this.input) {
+                        case "1":
+                            this.Clear();
+                            this.SearchProduct();
+                            loop = false;
+                            break;
+                        case "2":
+                            this.Clear();
+                            break;
+                        default:
+                            this.Clear();
+                            System.out.println("Invalid input.");
+                    }
+               }
+                break;
+            case "4":
+                    
+                    int stocksMinimun;
+                    int stocksMaximum;
+                    while (true) {
+                        
+                         try {
+                            
+                            System.out.print("Enter Minimun Stocks: ");
+                            stocksMinimun = this.scan.nextInt();
+                            System.out.print("Enter Maximum Stocks: ");
+                            stocksMaximum = this.scan.nextInt();
+                             
+                           break;
+                             
+                        } catch (InputMismatchException e) {
+                            
+                            System.out.println("Invalid: Enter an integer only");
+                            this.scan.nextLine();
+                            
+                        }
+                        
+                    }
+                     this.scan.nextLine();
+                
+                    product.searchByStocksRange(stocksMinimun, stocksMaximum, authActive);
+
+                    loop = true;
+                    while (loop) {
+                    
+                    System.out.print("Go back (1 - Yes | 2 - No): ");
+                    this.input = this.scan.nextLine();
+
+                    switch (this.input) {
+                        case "1":
+                            this.Clear();
+                            this.SearchProduct();
+                            loop = false;
+                            break;
+                        case "2":
+                            this.Clear();
+                            break;
+                        default:
+                            this.Clear();
+                            System.out.println("Invalid input.");
+                    }
+               }
+                break;
+                
+            case "5":
+                
+                    float productPrice;
+                    while (true) {
+                        
+                         try {
+                            
+                             System.out.print("Enter Specific Price: ");
+                             productPrice = this.scan.nextFloat();
+                             
+                           break;
+                             
+                        } catch (InputMismatchException e) {
+                            
+                            System.out.println("Invalid: Enter an integer only");
+                            this.scan.nextLine();
+                            
+                        }
+                        
+                    }
+                     this.scan.nextLine();
+                
+                    product.searchBySpecificPrice(productPrice, authActive);
+
+                    loop = true;
+                    while (loop) {
+                    
+                    System.out.print("Go back (1 - Yes | 2 - No): ");
+                    this.input = this.scan.nextLine();
+
+                    switch (this.input) {
+                        case "1":
+                            this.Clear();
+                            this.SearchProduct();
+                            loop = false;
+                            break;
+                        case "2":
+                            this.Clear();
+                            break;
+                        default:
+                            this.Clear();
+                            System.out.println("Invalid input.");
+                    }
+               }
+                break;
+                
+            case "6": 
+                
+                    float priceMinimun;
+                    float priceMaximum;
+                    while (true) {
+                        
+                         try {
+                            
+                            System.out.print("Enter Minimun Price: ");
+                            priceMinimun = this.scan.nextFloat();
+                            System.out.print("Enter Maximum Price: ");
+                            priceMaximum = this.scan.nextFloat();
+                             
+                           break;
+                             
+                        } catch (InputMismatchException e) {
+                            
+                            System.out.println("Invalid: Enter an integer only");
+                            this.scan.nextLine();
+                            
+                        }
+                        
+                    }
+                     this.scan.nextLine();
+                
+                    product.searchByPriceRange(priceMinimun, priceMaximum, authActive);
+
+                    loop = true;
+                    while (loop) {
+                    
+                    System.out.print("Go back (1 - Yes | 2 - No): ");
+                    this.input = this.scan.nextLine();
+
+                    switch (this.input) {
+                        case "1":
+                            this.Clear();
+                            this.SearchProduct();
+                            loop = false;
+                            break;
+                        case "2":
+                            this.Clear();
+                            break;
+                        default:
+                            this.Clear();
+                            System.out.println("Invalid input.");
+                    }
+               }
+                break;
+            case "7":
+                this.Clear();
+                this.ProductMaintenance();
+                break;
+            default:
+                this.Clear();
+                System.out.println("Invalid input.");
+                this.SearchProduct();
+                break;
+        }
+        
+    }
+    
+    
         public void TransactionModule() {
             
             System.out.println("\n");
@@ -467,6 +1205,12 @@ public class Components {
 
             System.out.println("\n");
             System.out.println("Menu");
+            
+            if (Storage.Products.isEmpty()) {
+                this.Clear();
+                System.out.println("The product inventory is empty add a products.");
+                this.AddProduct();
+            }
             
             Product product = new Product();
             product.productsList(admin);
@@ -609,6 +1353,12 @@ public class Components {
             System.out.println("\n");
             System.out.println("List of Transactions");
             
+            if (Storage.Products.isEmpty()) {
+                this.Clear();
+                System.out.println("The product inventory is empty add a products.");
+                this.AddProduct();
+            }
+            
             Transaction transaction = new Transaction();
             transaction.TransactionList();
             
@@ -617,13 +1367,13 @@ public class Components {
             boolean loop = true;
             while (loop) { 
                 
-                System.out.println("Input BACK if you want to back  Main Menu: ");
+                System.out.println("Input BACK if you want to back in Main Menu: ");
                 System.out.print("Enter Transaction No: ");
                 String transactionCode = this.scan.nextLine();
                 
                 if (transactionCode.toUpperCase().equals("BACK")) {
-                        this.Clear();
-                        this.MainMenu();
+                    this.Clear();
+                    this.MainMenu();
                 }
 
                 boolean isSuccess = false;

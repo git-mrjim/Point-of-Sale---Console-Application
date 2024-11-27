@@ -72,6 +72,7 @@ public class Transaction {
      public boolean setTransaction(String productCode, int qty) {
          
         boolean isSuccess = false;
+        
         for (Product item : Storage.Products) {
             
             if (item.getCode().equals(productCode)) {
