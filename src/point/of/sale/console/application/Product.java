@@ -23,28 +23,27 @@ public class Product {
         
     }
     
-   public void productsList(Auth dependency) {
-       
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
-        System.out.println("---------------------------------------------------------------------------");
+  public void productsList() {
+        System.out.println("---------------------------------------------------------------------------------");
+        System.out.println("|    No.    |     Code     |         Name         |    Stocks    |     Price     |");
+        System.out.println("---------------------------------------------------------------------------------");
 
-        for (Product product : Storage.Products) {
-            int productNo = Storage.Products.indexOf(product) + 1;
-            if (product.productDependency.getUsername().equals(dependency.getUsername())) {
-                System.out.printf(
-                    "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
-                    productNo, 
-                    product.getCode(), 
-                    product.getName(), 
-                    product.getStocks(), 
-                    product.getPrice()
-                );
-            }
+        for (int i = 0; i < Storage.Products.size(); i++) {
+            Product product = Storage.Products.get(i);
+            int productNo = i + 1;
+            System.out.printf(
+                "| %-10d | %-12s | %-20s | %-12d | %-12.2f |\n",
+                productNo,
+                product.getCode(),
+                product.getName(),
+                product.getStocks(),
+                product.getPrice()
+            );
         }
-        System.out.println("---------------------------------------------------------------------------");
-        
+
+        System.out.println("---------------------------------------------------------------------------------");
 }
+
 
     public boolean setName(String name) {
         
@@ -110,7 +109,7 @@ public class Product {
         this.productDependency = dependency;
     }
     
-    public void searchByCode(String code, Auth dependency) {
+    public void searchByCode(String code) {
         
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
@@ -118,7 +117,7 @@ public class Product {
 
         for (Product product : Storage.Products) {
             int productNo = Storage.Products.indexOf(product) + 1;
-            if (product.productCode.equals(code) && product.productDependency.getUsername().equals(dependency.getUsername())) {
+            if (product.productCode.equals(code)) {
                 System.out.printf(
                     "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
                     productNo, 
@@ -133,7 +132,7 @@ public class Product {
         
     }
     
-    public void searchByName(String name, Auth dependency) {
+    public void searchByName(String name) {
         
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
@@ -141,7 +140,7 @@ public class Product {
 
         for (Product product : Storage.Products) {
             int productNo = Storage.Products.indexOf(product) + 1;
-            if (product.getName().toLowerCase().equals(name.toLowerCase()) && product.productDependency.getUsername().equals(dependency.getUsername())) {
+            if (product.getName().toLowerCase().equals(name.toLowerCase())) {
                 System.out.printf(
                     "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
                     productNo, 
@@ -156,7 +155,7 @@ public class Product {
         
     }
     
-    public void searchBySpecificStocks(int stocks, Auth dependency) {
+    public void searchBySpecificStocks(int stocks) {
         
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
@@ -164,7 +163,7 @@ public class Product {
 
         for (Product product : Storage.Products) {
             int productNo = Storage.Products.indexOf(product) + 1;
-            if (product.getStocks() == stocks && product.productDependency.getUsername().equals(dependency.getUsername())) {
+            if (product.getStocks() == stocks) {
                 System.out.printf(
                     "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
                     productNo, 
@@ -179,7 +178,7 @@ public class Product {
         
     }
     
-    public void searchByStocksRange(int minimum, int maximum, Auth dependency) {
+    public void searchByStocksRange(int minimum, int maximum) {
         
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
@@ -187,7 +186,7 @@ public class Product {
 
         for (Product product : Storage.Products) {
             int productNo = Storage.Products.indexOf(product) + 1;
-            if (product.getStocks() >= minimum && product.getStocks() <= maximum && product.productDependency.getUsername().equals(dependency.getUsername())) {
+            if (product.getStocks() >= minimum && product.getStocks() <= maximum) {
                 System.out.printf(
                     "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
                     productNo, 
@@ -202,7 +201,7 @@ public class Product {
         
     }
     
-    public void searchBySpecificPrice(float price, Auth dependency) {
+    public void searchBySpecificPrice(float price) {
         
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
@@ -210,7 +209,7 @@ public class Product {
 
         for (Product product : Storage.Products) {
             int productNo = Storage.Products.indexOf(product) + 1;
-            if (product.getPrice() == price && product.productDependency.getUsername().equals(dependency.getUsername())) {
+            if (product.getPrice() == price) {
                 System.out.printf(
                     "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
                     productNo, 
@@ -225,7 +224,7 @@ public class Product {
         
     }
     
-    public void searchByPriceRange(float minimum, float maximum, Auth dependency) {
+    public void searchByPriceRange(float minimum, float maximum) {
         
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("|    No.    |    Code    |        Name        |    Stocks    |    Price    |");
@@ -233,7 +232,7 @@ public class Product {
 
         for (Product product : Storage.Products) {
             int productNo = Storage.Products.indexOf(product) + 1;
-            if (product.getPrice() >= minimum && product.getPrice() <= maximum && product.productDependency.getUsername().equals(dependency.getUsername())) {
+            if (product.getPrice() >= minimum && product.getPrice() <= maximum) {
                 System.out.printf(
                     "| %-8d | %-10s | %-18s | %-12d | %-10.1f |\n",
                     productNo, 

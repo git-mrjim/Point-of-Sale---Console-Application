@@ -27,6 +27,8 @@ public class Components {
     private String password;
     private String input;
     
+    private InOut inOut;
+    
     Components() {
         
         Storage.Users.add(admin);
@@ -50,7 +52,7 @@ public class Components {
         System.out.println("--------------------------------------------");
         System.out.println("Point of Sale - Console Application");
         System.out.println("--------------------------------------------");
-        System.out.println("1. Sign-up\n2. Login\n3. Exit");
+        System.out.println("1. Sign-up\n2. Login\n3. In and Out\n4. Exit");
         System.out.println("--------------------------------------------");
 
         System.out.print("What do you want to do (?): ");
@@ -66,6 +68,10 @@ public class Components {
                this.Login();
                break;
             case "3":
+                this.Clear();
+               this.InAndOut();
+               break;
+            case "4":
                this.Clear();
                break;
             default:
@@ -75,6 +81,57 @@ public class Components {
                break;
         }
         
+    }
+    
+    public void InAndOut() {
+         
+        try {
+            
+            this.inOut.displayInOut();
+            System.out.println("Input BACK if you want to back.");
+            System.out.println("Input SEARCH if you want to search.");
+            System.out.print("Input: ");
+            this.input = this.scan.nextLine();
+        
+            switch(this.input.toLowerCase()) {
+                case "back":
+                    this.Clear();
+                    this.Start();
+                    break;
+                case "search":
+                    this.Clear();
+
+                    boolean loop = true; 
+                    while (loop) {
+
+                        System.out.println("Input BACK if you want to back.");
+                        System.out.print("Username (Search): ");
+                        this.input = this.scan.nextLine();
+
+                        if (this.input.toLowerCase().equals("back")) {
+                            this.Clear();
+                            this.InAndOut();
+                            loop = false;
+                        }
+
+                        this.inOut.displayInOut(input);
+
+                    }
+
+                    break;
+                default: 
+                    this.Clear();
+                    System.out.println("Invalid input.");
+                    this.InAndOut();
+                    break;
+            }
+    
+        } catch (NullPointerException e) {
+            this.Clear();
+            System.out.println("It's empty.");
+            this.Start();
+        }
+                
     }
     
     public void FullnameForm(Auth user, String format) {
@@ -211,6 +268,8 @@ public class Components {
                 this.Clear();
                 System.out.println("Login successful.");
                 this.authActive = item;
+                this.inOut = new InOut(authActive);
+                this.inOut.in();
                 this.MainMenu();
                 break;
             }
@@ -256,6 +315,9 @@ public class Components {
             case "5":
                 this.Clear();
                 System.out.println("Bye " + authActive.getFullname() + " :(");
+                this.inOut.out();
+                this.inOut.calculateWorkDuration();
+                Storage.InOut.add(this.inOut);
                 authActive = null;
                 this.Start();
                 break;
@@ -407,7 +469,7 @@ public class Components {
         System.out.println("List of Products");
         
         Product product = new Product();
-        product.productsList(authActive);
+        product.productsList();
         
         System.out.println("\n");
         System.out.println("--------------------------------------------");
@@ -693,7 +755,7 @@ public class Components {
         System.out.println("--------------------------------------------");
         
         Product product = new Product();
-        product.productsList(authActive);
+        product.productsList();
         System.out.println("Input BACK if you want to back on Product Maintenance");
         System.out.print("Enter Product Code: ");
         String productCode = this.scan.nextLine();
@@ -721,11 +783,11 @@ public class Components {
             while (loop) {
                 
                 System.out.println("\n");
-                product.searchByCode(productCode, authActive);
+                product.searchByCode(productCode);
                 System.out.println("--------------------------------------------");
                 System.out.printf("Edit Product %s By:%n", productFound.getName());
                 System.out.println("--------------------------------------------");
-                System.out.println("1. Name\n2. Stocks\n3. Increase Stocks\n4. Reduce Stocks\n5. Price\n6. Increase Price\n7. Reduce Price\n8. Exit");
+                System.out.println("1. Name\n2. Stocks\n3. Increase Stocks\n4. Reduce Stocks\n5. Price\n6. Increase Price\n7. Reduce Price\n8. Back");
                 System.out.println("--------------------------------------------");
                 System.out.print("What do you want to do (?): ");
                 this.input = this.scan.nextLine();
@@ -838,7 +900,7 @@ public class Components {
         System.out.println("--------------------------------------------");
         
         Product product = new Product();
-        product.productsList(authActive);
+        product.productsList();
         System.out.println("Input BACK if you want to back on Product Maintenance");
         System.out.print("Enter Product Code: ");
         String productCode = this.scan.nextLine();
@@ -941,7 +1003,7 @@ public class Components {
                 
                     System.out.print("Enter Product Code: ");
                     String productCode = this.scan.nextLine();
-                    product.searchByCode(productCode, authActive);
+                    product.searchByCode(productCode);
                     
                     boolean loop = true;
                     while (loop) {
@@ -970,7 +1032,7 @@ public class Components {
                 
                     System.out.print("Enter Product Name: ");
                     String productName = this.scan.nextLine();
-                    product.searchByName(productName, authActive);
+                    product.searchByName(productName);
 
                     loop = true;
                     while (loop) {
@@ -1016,7 +1078,7 @@ public class Components {
                     }
                      this.scan.nextLine();
                 
-                    product.searchBySpecificStocks(productStocks, authActive);
+                    product.searchBySpecificStocks(productStocks);
 
                     loop = true;
                     while (loop) {
@@ -1064,7 +1126,7 @@ public class Components {
                     }
                      this.scan.nextLine();
                 
-                    product.searchByStocksRange(stocksMinimun, stocksMaximum, authActive);
+                    product.searchByStocksRange(stocksMinimun, stocksMaximum);
 
                     loop = true;
                     while (loop) {
@@ -1110,7 +1172,7 @@ public class Components {
                     }
                      this.scan.nextLine();
                 
-                    product.searchBySpecificPrice(productPrice, authActive);
+                    product.searchBySpecificPrice(productPrice);
 
                     loop = true;
                     while (loop) {
@@ -1159,7 +1221,7 @@ public class Components {
                     }
                      this.scan.nextLine();
                 
-                    product.searchByPriceRange(priceMinimun, priceMaximum, authActive);
+                    product.searchByPriceRange(priceMinimun, priceMaximum);
 
                     loop = true;
                     while (loop) {
@@ -1213,14 +1275,16 @@ public class Components {
             }
             
             Product product = new Product();
-            product.productsList(admin);
+            product.productsList();
+            System.out.println("\n");
             
             int orders = 0;
             while (true) {
                 try {
-                
+                    
                     System.out.print("How many orders?: ");
                     orders = this.scan.nextInt();
+                    
                     break;
                     
                 } catch (InputMismatchException e) {
@@ -1263,6 +1327,7 @@ public class Components {
                     }
                     
                     if (transaction.setTransaction(code, qty)) {
+                        transaction.setCashier(authActive);
                         loop = false;
                     } else {
                         System.out.println(transaction.setTransactionMessage);
@@ -1272,52 +1337,76 @@ public class Components {
                 } 
                 
             }
-            
+             this.scan.nextLine();
+           
             this.Clear();
             System.out.println("\n");
             transaction.subTransactionList();
-            
             System.out.println("\n");
             
-            float payment = 0;
-            while (true) {
-              try {
-                
-                    System.out.print("Enter payment: ");
-                    payment = this.scan.nextFloat();
-                    transaction.Calculate(payment);
-                    
-                    if (payment >= Math.round(transaction.getTotal())) {
-                        
-                        System.out.println("\n");
-                        System.out.printf("Change: %.1f%n", transaction.getChange());
-                        
-                        Storage.Transactions.add(transaction);
-                        
-                        System.out.println("\n");
-                        System.out.println("Transaction Successful.");
-                        break;
-                
-                    } else {
-
-                         System.out.println("The payment is not enough.");
-                         System.out.println("Transaction Failed.");
-
-                    }
-                
-                } catch (InputMismatchException e) {
-                    
-                     System.out.println("Invalid: Enter an integer only");
-                     this.scan.nextLine();
-                    
-                }  
-            }
-            
-          
             boolean loop = true;
             while (loop) {
                 
-                this.scan.nextLine();
+                System.out.println("Make sure the customer paid right before you continue.");
+                System.out.print("Continue to payment? ( Yes - 1 | No - 2 ): ");
+                this.input = this.scan.nextLine();
+                
+                switch (this.input) {
+                    case "1":
+
+                        float payment = 0;
+                        while (true) {
+                          try {
+
+                                System.out.print("Enter payment: ");
+                                payment = this.scan.nextFloat();
+                                transaction.Calculate(payment);
+
+                                if (payment >= Math.round(transaction.getTotal())) {
+
+                                    System.out.println("\n");
+                                    System.out.printf("Change: %.1f%n", transaction.getChange());
+                                    
+                                    transaction.setCode();
+                                    Storage.Transactions.add(transaction);
+                                    
+                                    System.out.println("\n");
+                                    System.out.println("Transaction Successful.");
+                                    break;
+
+                                } else {
+
+                                     System.out.println("The payment is not enough.");
+                                     System.out.println("Transaction Failed.");
+
+                                }
+
+                            } catch (InputMismatchException e) {
+
+                                 System.out.println("Invalid: Enter an integer only");
+                                 this.scan.nextLine();
+
+                            }  
+                        }
+                        this.scan.nextLine();
+                        loop = false;
+                        break;
+
+                    case "2":
+                        this.Clear();
+                        loop = false;
+                        break;
+                    default: 
+                        System.out.println("Invalid input.");
+                        break;
+                
+                }
+                
+            }
+            
+            
+            loop = true;
+            while (loop) {
                 
                 System.out.print("Another Transaction (1 - Yes | 2 - No): ");
                 this.input = this.scan.nextLine();
@@ -1361,6 +1450,7 @@ public class Components {
             
             Transaction transaction = new Transaction();
             transaction.TransactionList();
+            System.out.println("\n");
             
             Transaction transactionChoose = null;
             
@@ -1398,7 +1488,8 @@ public class Components {
             this.Clear();
             transactionChoose.subTransactionList();
             System.out.println("\n");
-            System.out.printf("Entered Paymnt: %.1f%nChange: %.1f%n", transactionChoose.getPayment(), transactionChoose.getChange());
+            System.out.printf("Entered Payment: %.1f%nChange: %.1f%nCashier: %s%n", transactionChoose.getPayment(), transactionChoose.getChange(), transactionChoose.getCashier().getFullname());
+            System.out.println("\n");
             
             loop = true;
             while (loop) {

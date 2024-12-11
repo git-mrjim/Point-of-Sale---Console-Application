@@ -12,6 +12,8 @@ package point.of.sale.console.application;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 class SubTransaction {
 
@@ -42,30 +44,13 @@ public class Transaction {
     private float transactionPayment;
     private float transactionChange;
     public String setTransactionMessage = "";
+    private Auth cashier;
+    private String transactionTime;
 
     public Transaction() {
         
-        boolean isLoopExecute = false;
-        int currentNo = 0;
-         
-        for (Transaction item : Storage.Transactions) {
-            
-            isLoopExecute = true;
-           
-            if (item.getNo() > currentNo) {
-                currentNo = item.getNo();
-            }
-            
-        }
-        
-        if (isLoopExecute) {
-            this.transactionNo = currentNo + 1;
-        } else {
-            this.transactionNo = 1;
-        }
-        
-        this.transactionNoCode = "T" + this.transactionNo;
         this.transactionDate = LocalDate.now().toString();
+        this.transactionTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
         
     }
  
@@ -88,7 +73,6 @@ public class Transaction {
                       
                     SubTransaction subTransaction = new SubTransaction(qty, item);
                     this.subTransactions.add(subTransaction);
-                    Storage.Products.get(index).stacksOut(qty);
                     isSuccess = true;
                     
                 }
@@ -102,61 +86,101 @@ public class Transaction {
         return isSuccess;
     }
      
-    public void subTransactionList() {
-        
+   public void subTransactionList() { 
+       
         System.out.println("------------------------------------------------------------------------------------------");
         System.out.println("|    No.    |    Code    |        Name        |    QTY    |    Price    |    Sub Total    |");
         System.out.println("------------------------------------------------------------------------------------------");
 
         float total = 0;
-        for (SubTransaction subtrans : subTransactions) {
-                int productNo = Storage.Products.indexOf(subtrans.product) + 1;
-                total = total + subtrans.subTotal;
-                System.out.printf(
-                    "| %-8d | %-10s | %-18s | %-10d | %-10.1f | %-14.1f |\n",
-                    productNo, 
-                    subtrans.product.getCode(), 
-                    subtrans.product.getName(), 
-                    subtrans.qty, 
-                    subtrans.product.getPrice(),
-                    subtrans.subTotal
-                );
+        for (int i = 0; i < subTransactions.size(); i++) {
+            SubTransaction subtrans = subTransactions.get(i);
+            int productNo = i + 1; // Correctly number subtransactions
+            total += subtrans.subTotal; // Accumulate total
+
+            System.out.printf(
+                "| %-8d | %-10s | %-20s | %-8d | %-10.2f | %-14.2f |\n",
+                productNo,
+                subtrans.product.getCode(),
+                subtrans.product.getName(),
+                subtrans.qty,
+                subtrans.product.getPrice(),
+                subtrans.subTotal
+            );
         }
+
         System.out.println("------------------------------------------------------------------------------------------");
-        System.out.printf("Total:                                                                              %.1f   ", total);
-    }
+        System.out.printf("Total:                                                                      %.2f\n", total);
+        
+}
+
     
     public void TransactionList() {
-        
-        System.out.println("--------------------------------------------------------------------");
-        System.out.println("|    No.    |    Transaction No.    |     Total     |     Date     |");
-        System.out.println("--------------------------------------------------------------------");
-
-        for (Transaction transaction : Storage.Transactions) {
-                int productNo = Storage.Transactions.indexOf(transaction) + 1;
-                System.out.printf(
-                    "| %-10d | %-20s | %-14.1f | %-10s |\n",
-                    productNo, 
-                    transaction.getNoCode(),
-                    transaction.getTotal(),
-                    transaction.getDate()
-                );
+        System.out.println("---------------------------------------------------------------------------------------------------------");
+        System.out.println("|    No.    |    Transaction No.    |     Total     |     Date     |     Time     |        Cashier       |");
+        System.out.println("---------------------------------------------------------------------------------------------------------");
+        for (int i = Storage.Transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = Storage.Transactions.get(i);
+            int itemNo = Storage.Transactions.size() - i;
+            System.out.printf(
+                "| %-10d | %-20s | %-14.2f | %-12s | %-10s | %-20s |\n",
+                itemNo, 
+                transaction.getNoCode(),
+                transaction.getTotal(),
+                transaction.getDate(),
+                transaction.getTime(),
+                transaction.getCashier().getFullname()
+            );
         }
-        System.out.println("--------------------------------------------------------------------");
-        
-    }
+        System.out.println("---------------------------------------------------------------------------------------------------------");
+}
+
      
     public void Calculate(float payment) {
         
         float total = 0;
         for (SubTransaction subtrans : subTransactions) {
             total = total + subtrans.subTotal;
+            Storage.Products.get(Storage.Products.indexOf(subtrans.product)).stacksOut(subtrans.qty);
         }
         this.transactionTotal = total;
         
         this.transactionPayment = payment;
         this.transactionChange = Math.round(this.transactionPayment - this.transactionTotal);
         
+    }
+    
+    public void setCode() {
+        
+        boolean isLoopExecute = false;
+        int currentNo = 0;
+         
+        for (Transaction item : Storage.Transactions) {
+            
+            isLoopExecute = true;
+           
+            if (item.getNo() > currentNo) {
+                currentNo = item.getNo();
+            }
+            
+        }
+        
+        if (isLoopExecute) {
+            this.transactionNo = currentNo + 1;
+        } else {
+            this.transactionNo = 1;
+        }
+        
+        this.transactionNoCode = "T" + this.transactionNo;
+        
+    }
+
+    public void setCashier(Auth casher) {
+        this.cashier = casher;
+    }
+
+    public Auth getCashier() {
+        return cashier;
     }
 
     public String getNoCode() {
@@ -178,6 +202,12 @@ public class Transaction {
     public String getDate() {
         return transactionDate;
     }
+
+    public String getTime() {
+        return transactionTime;
+    }
+    
+    
 
     public float getPayment() {
         return transactionPayment;
