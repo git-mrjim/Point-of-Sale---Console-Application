@@ -65,7 +65,7 @@ public class Transaction {
                 int index = Storage.Products.indexOf(item);
                 if (Storage.Products.get(index).getStocks() < qty) {
                     
-                     this.setTransactionMessage =  "The product " + item.getName() + " with code of " + item.getCode() + " is currently at low stocks.\n" + item.getName() + " Stocks: " + item.getStocks();
+                     this.setTransactionMessage =  "The product " + item.getName() + " with code of " + item.getCode() + " is have not enough stocks.\n" + item.getName() + " Stocks: " + item.getStocks();
                      isSuccess = false;
                      
                 } else {

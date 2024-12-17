@@ -84,6 +84,11 @@ public class Components {
     }
     
     public void InAndOut() {
+        
+        System.out.println("--------------------------------------------");
+        System.out.println("In and Out Log");
+        System.out.println("--------------------------------------------");
+        System.out.println("\n");
          
         try {
             
@@ -521,6 +526,12 @@ public class Components {
             if (input.equals("") || input.equals(" ")) {
                 System.out.println("Invalid: It's empty");
                 continue;
+            }
+            
+            char inputFirstChar = input.charAt(0);
+            if (inputFirstChar == ' ') {
+                System.out.println("Invalid: Product name don't have space in it's first character because it's use as product code.");
+                continue;
             } 
             
             if (product.setName(input)) {
@@ -798,6 +809,10 @@ public class Components {
                         System.out.println("Current Name: " + productFound.getName());
                         this.ProductNameForm(productFound, "New ");
                         this.Clear();
+                        Storage.Products.get(Storage.Products.indexOf(productFound)).productCode = "  ";
+                        String code =  productFound.setCode(productFound);
+                        productCode = code;
+                        System.out.println("Product Code for " + productFound.getName() + " is " + code);
                         System.out.println("Product name update successful.");
                         break;
                     case "2":
@@ -1001,6 +1016,9 @@ public class Components {
         switch (this.input) {
             case "1":
                 
+                boolean outerLoop = true;
+                while (outerLoop) {
+                    
                     System.out.print("Enter Product Code: ");
                     String productCode = this.scan.nextLine();
                     product.searchByCode(productCode);
@@ -1016,9 +1034,11 @@ public class Components {
                             this.Clear();
                             this.SearchProduct();
                             loop = false;
+                            outerLoop = false;
                             break;
                         case "2":
                             this.Clear();
+                            loop = false;
                             break;
                         default:
                             this.Clear();
@@ -1026,83 +1046,106 @@ public class Components {
                     }
 
                 }
+                    
+                }
                 break;
                 
             case "2":
                 
-                    System.out.print("Enter Product Name: ");
-                    String productName = this.scan.nextLine();
-                    product.searchByName(productName);
+                outerLoop = true;
+                while (outerLoop) {
+                
+                        System.out.print("Enter Product Name: ");
+                        String productName = this.scan.nextLine();
+                        product.searchByName(productName);
 
-                    loop = true;
-                    while (loop) {
+                        boolean loop = true;
+                        while (loop) {
+
+                        System.out.print("Go back (1 - Yes | 2 - No): ");
+                        this.input = this.scan.nextLine();
+
+                        switch (this.input) {
+                            case "1":
+                                this.Clear();
+                                this.SearchProduct();
+                                loop = false;
+                                outerLoop = false;
+                                break;
+                            case "2":
+                                this.Clear();
+                                loop = false;
+                                break;
+                            default:
+                                this.Clear();
+                                System.out.println("Invalid input.");
+                        }
+                   }
+                
+                }
+                
                     
-                    System.out.print("Go back (1 - Yes | 2 - No): ");
-                    this.input = this.scan.nextLine();
-
-                    switch (this.input) {
-                        case "1":
-                            this.Clear();
-                            this.SearchProduct();
-                            loop = false;
-                            break;
-                        case "2":
-                            this.Clear();
-                            break;
-                        default:
-                            this.Clear();
-                            System.out.println("Invalid input.");
-                    }
-               }
                 break;
                 
             case "3":
                 
-                    int productStocks;
-                    while (true) {
-                        
-                         try {
-                            
-                             System.out.print("Enter Specific Stocks: ");
-                             productStocks = this.scan.nextInt();
-                             
-                           break;
-                             
-                        } catch (InputMismatchException e) {
-                            
-                            System.out.println("Invalid: Enter an integer only");
-                            this.scan.nextLine();
-                            
-                        }
-                        
-                    }
-                     this.scan.nextLine();
+                outerLoop = true;
+                while (outerLoop) {
                 
-                    product.searchBySpecificStocks(productStocks);
+                        int productStocks;
+                        while (true) {
 
-                    loop = true;
-                    while (loop) {
-                        
-                    System.out.print("Go back (1 - Yes | 2 - No): ");
-                    this.input = this.scan.nextLine();
+                             try {
 
-                    switch (this.input) {
-                        case "1":
-                            this.Clear();
-                            this.SearchProduct();
-                            loop = false;
-                            break;
-                        case "2":
-                            this.Clear();
-                            break;
-                        default:
-                            this.Clear();
-                            System.out.println("Invalid input.");
-                    }
-               }
+                                 System.out.print("Enter Specific Stocks: ");
+                                 productStocks = this.scan.nextInt();
+
+                               break;
+
+                            } catch (InputMismatchException e) {
+
+                                System.out.println("Invalid: Enter an integer only");
+                                this.scan.nextLine();
+
+                            }
+
+                        }
+                         this.scan.nextLine();
+
+                        product.searchBySpecificStocks(productStocks);
+
+                        boolean loop = true;
+                        while (loop) {
+
+                        System.out.print("Go back (1 - Yes | 2 - No): ");
+                        this.input = this.scan.nextLine();
+
+                        switch (this.input) {
+                            case "1":
+                                this.Clear();
+                                this.SearchProduct();
+                                loop = false;
+                                outerLoop = false;
+                                break;
+                            case "2":
+                                this.Clear();
+                                loop = false;
+                                break;
+                            default:
+                                this.Clear();
+                                System.out.println("Invalid input.");
+                        }
+                   }
+                
+                }
+                
+                    
                 break;
             case "4":
                     
+                outerLoop = true;
+                while (outerLoop) {
+                
                     int stocksMinimun;
                     int stocksMaximum;
                     while (true) {
@@ -1128,7 +1171,7 @@ public class Components {
                 
                     product.searchByStocksRange(stocksMinimun, stocksMaximum);
 
-                    loop = true;
+                    boolean loop = true;
                     while (loop) {
                     
                     System.out.print("Go back (1 - Yes | 2 - No): ");
@@ -1139,18 +1182,27 @@ public class Components {
                             this.Clear();
                             this.SearchProduct();
                             loop = false;
+                            outerLoop = false;
                             break;
                         case "2":
                             this.Clear();
+                            loop = false;
                             break;
                         default:
                             this.Clear();
                             System.out.println("Invalid input.");
                     }
                }
+                    
+                }
+                
+                    
                 break;
                 
             case "5":
+                
+                outerLoop = true;
+                while (outerLoop) {
                 
                     float productPrice;
                     while (true) {
@@ -1174,7 +1226,7 @@ public class Components {
                 
                     product.searchBySpecificPrice(productPrice);
 
-                    loop = true;
+                    boolean loop = true;
                     while (loop) {
                     
                     System.out.print("Go back (1 - Yes | 2 - No): ");
@@ -1185,18 +1237,27 @@ public class Components {
                             this.Clear();
                             this.SearchProduct();
                             loop = false;
+                            outerLoop = false;
                             break;
                         case "2":
                             this.Clear();
+                            loop = false;
                             break;
                         default:
                             this.Clear();
                             System.out.println("Invalid input.");
                     }
                }
+                
+                }
+                
+                    
                 break;
                 
             case "6": 
+                
+                 outerLoop = true;
+                while (outerLoop) {
                 
                     float priceMinimun;
                     float priceMaximum;
@@ -1223,7 +1284,7 @@ public class Components {
                 
                     product.searchByPriceRange(priceMinimun, priceMaximum);
 
-                    loop = true;
+                    boolean loop = true;
                     while (loop) {
                     
                     System.out.print("Go back (1 - Yes | 2 - No): ");
@@ -1234,15 +1295,20 @@ public class Components {
                             this.Clear();
                             this.SearchProduct();
                             loop = false;
+                            outerLoop = false;
                             break;
                         case "2":
                             this.Clear();
+                            loop = false;
                             break;
                         default:
                             this.Clear();
                             System.out.println("Invalid input.");
                     }
                }
+                
+                }
+                
                 break;
             case "7":
                 this.Clear();
